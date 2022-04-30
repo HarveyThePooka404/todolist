@@ -14,9 +14,6 @@
 
       show = true;
       group = true;
-      created():void {
-          console.log("nav bar")
-      }
 
       showMenu(): void {
           console.log("nav bar clicked")

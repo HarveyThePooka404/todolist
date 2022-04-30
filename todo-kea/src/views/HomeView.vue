@@ -7,18 +7,13 @@
     <!-- Sizes your content based upon application components -->
     <v-main>
       <!-- Provides the application the proper gutter -->
+          <createTaskModal />
       <v-container class="layout" fluid>
-        <v-row class="pb-4" justify>
-            <v-btn rounded small color="blue-grey" class="ma-2 white--text">
-              Add new task
-              <v-icon right dark> mdi-plus-circle </v-icon>
-            </v-btn>
-        </v-row>
-        <template>
+        <template >
           <ToDo
-            description="This is text But it would need to be slightly longer..."
-            tag="Cooking"
-            title="Prepare chicken for tomorrow"
+          v-for="task in tasks"
+          :key="task.id"
+          :task="task"
           />
         </template>
       </v-container>
@@ -28,26 +23,43 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+
+//components
 import NavBar from "@/components/NavBar.vue";
 import SideMenu from "@/components/SideMenu.vue";
-import ToDo from "@/components/ToDo.vue";
+import ToDo from "@/components/tasks/ToDo.vue";
+import StandardButton from "@/components/buttons/StandardButton.vue";
+import createTaskModal from "@/components/tasks/createTaskModal.vue";
+
+//types
+import { Task } from "@/types/Task"
 
 @Component({
   components: {
     NavBar,
     SideMenu,
     ToDo,
+    StandardButton, 
+    createTaskModal
   },
 })
 export default class Home extends Vue {
-  created() {
-    console.log("YOLO");
+
+  async created(): Promise<void> {
+    await this.$store.dispatch("bindAllToDos");
   }
+
+  get tasks(): Array<Task> {
+    //this is an example of things I am getting reactively.. 
+    return this.$store.getters.getAllToDos
+  }
+
 }
 </script>
 <style lang="scss" scoped>
 .layout {
   display: grid;
-  grid-template-rows: repeat(2, auto);
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  column-gap: 10px;
 }
 </style>
